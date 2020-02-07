@@ -3,10 +3,13 @@ const app = express();
 const bodyParser = require("body-parser");
 const Post = require("./models/post");
 const path = require("path");
+const staticAsset = require('static-asset');
+
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(staticAsset(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   "/javascripts",

@@ -1,0 +1,43 @@
+.header {
+	position: fixed;
+	top: 0;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	height: $headerHeight;
+	font-size: 15px;
+	background-color: $primaryColor;
+	opacity: 0.9;
+	z-index: 1000;
+	.container {
+		height: 100%;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0 $freeSpace;
+		.logo{
+			color: $whiteColor;
+			text-decoration: none;
+			font-size: 30px;
+			font-family: "Arial Black";
+			background-repeat: no-repeat;
+			background-position: center;
+			background-size: cover;
+			background-image: url("../images/logo.png");
+			display: block;
+			height: 100%;
+			width: 100px;
+		}
+		.menu {
+			display: flex;
+			list-style: none;
+			height: 100%;
+			align-items: center;
+			li {
+				a{
+					color: $whiteColor;
+				}
+			}
+		}
+	}
+}
