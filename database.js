@@ -9,8 +9,11 @@ module.exports = () => {
     mongoose.connection
       .on("error", error => reject(error))
       .on("close", () => console.log("Database connection closed."))
-      .once("open", () => resolve(mongoose.connection[0]));
+      .once("open", () => {
+        //console.log(mongoose.connections[0]);
+        resolve(mongoose.connections[0])
+    });
 
-    mongoose.connect(config.MONGO_URL);
+    mongoose.connect(config.MONGO_URL, {useNewUrlParser: true , useUnifiedTopology: true });
   });
 };

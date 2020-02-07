@@ -1,17 +1,20 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
+const Post = require("./models/post");
+const path = require("path");
 
 app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 app.use(bodyParser.urlencoded({ extended: true }));
-const arr = ["hello", "world!", "test"];
+app.use(express.static(path.join(__dirname, "public")));
+app.use(
+  "/javascripts",
+  express.static(path.join(__dirname, "node_modules", "jquery", "dist"))
+);
 
-app.get("/", (req, res) => res.render("index", { arr }));
-app.post("/create", (req, res) => {
-  arr.push(req.body.text);
-  res.redirect("/");
+app.get("/", (req, res) => {
+  res.render("index");
 });
-
-app.get("/create", (req, res) => res.render("create"));
 
 module.exports = app;
