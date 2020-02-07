@@ -3,7 +3,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const Post = require("./models/post");
 const path = require("path");
-const staticAsset = require('static-asset');
+const staticAsset = require('static-asset'); //add hash for static
 
 
 app.set("view engine", "ejs");

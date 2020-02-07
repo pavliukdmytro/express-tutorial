@@ -21,6 +21,7 @@
 			min-height: 100px;
 			margin-bottom: $freeSpace;
 			background-color: $whiteColor;
+			border-radius: $borderRadius;
 		}
 	}
 	@media (min-width: 768px) and (max-width: 991px) {

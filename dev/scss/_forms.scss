@@ -1,18 +1,15 @@
 form {
 	display: flex;
 	flex-direction: column;
-
 	.form-group {
 		margin-bottom: $freeSpace;
 		label {
 			font-size: 0.9em;
 		}
 	}
-	//.button-group{
-	//	margin-top: 10px;
-	//	display: flex;
-	//	justify-content: flex-end;
-	//}
+	&.register {
+		display: none;
+	}
 }
 
 button,
@@ -27,11 +24,25 @@ button,
 	padding-right: $freeSpace;
 	display: flex;
 	align-items: center;
+	border-radius: $borderRadius;
 	&:active {
 		box-shadow: inset 0 0 15px rgba(0,0,0,0.2);
 	}
 	&:hover {
 		text-decoration: none;
+	}
+	&.secondary {
+		background-color: $secondaryColor;
+		border: 1px solid $secondaryColor;
+	}
+	&.inverse {
+		color: $primaryColor;
+		background-color: $whiteColor;
+	}
+	&.secondary-inverse {
+		color: $secondaryColor;
+		border-color: $secondaryColor;
+		background-color: $whiteColor;
 	}
 }
 
@@ -44,6 +55,7 @@ input, textarea {
 	position: relative;
 	width: 100%;
 	font-size: 14px;
+	border-radius: $borderRadius;
 	&:disabled {
 		background-color: $greyColor;
 	}
