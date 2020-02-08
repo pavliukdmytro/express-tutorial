@@ -5,6 +5,7 @@ const path = require("path");
 const staticAsset = require("static-asset"); //add hash for static
 const config = require("./config");
 const mongoose = require("mongoose");
+const routes = require('./routes');
 
 //database
 mongoose.Promise = global.Promise;
@@ -20,6 +21,7 @@ mongoose.connect(config.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
+mongoose.set('useCreateIndex', true)
 //express
 const app = express();
 
@@ -27,6 +29,8 @@ const app = express();
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(bodyParser.urlencoded({ extended: true }));
+// parse application/json
+app.use(bodyParser.json())
 app.use(staticAsset(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
@@ -38,6 +42,8 @@ app.use(
 app.get("/", (req, res) => {
     res.render("index");
 });
+app.use('/api/auth', routes.auth);
+
 //catch 404 and forward to error handler
 app.use((req,res, next) => {
     const err = new Error('Not found');

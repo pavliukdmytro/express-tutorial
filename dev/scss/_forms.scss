@@ -69,6 +69,13 @@ input, textarea {
 		opacity: .8;
 		font-style: inherit;
 	}
+	&.error {
+		border-color: $errorColor;
+		color: $errorColor;
+		&::placeholder {
+			color: lighten($errorColor, 20%);
+		}
+	}
 }
 
 input {

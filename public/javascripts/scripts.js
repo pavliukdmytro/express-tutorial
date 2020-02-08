@@ -1,12 +1,1 @@
-$(function() {
-  $(".switch-button").on("click", function(t) {
-    t.preventDefault(),
-      $(this)
-        .closest("form")
-        .toggle(),
-      $(this)
-        .closest("form")
-        .siblings("form")
-        .toggle();
-  });
-});
+$(function(){$(".switch-button").on("click",function(r){r.preventDefault(),$(this).closest("form").toggle(),$(this).closest("form").siblings("form").toggle()}),$(".register-button").on("click",function(r){r.preventDefault();var e=this,t={login:$("#register-login").val(),password:$("#register-password").val(),passwordConfirm:$("#register-password-confirm").val()};$.ajax({type:"POST",data:JSON.stringify(t),contentType:"application/json",url:"/api/auth/register"}).done(function(r){if($("p.error, p.success").remove(),!r.ok)return $(".register h2").after('<p class="error">'+r.error+"</p>"),void(r.fields&&r.fields.forEach(function(r){$(e).closest("form").find('input[name="'+r+'"]').addClass("error")}));$(".register h2").after('<p class="success">Отлично</p>')})}),$("input, textarea").on("focus",function(){$(this).removeClass("error"),$("p.error").remove()})});
