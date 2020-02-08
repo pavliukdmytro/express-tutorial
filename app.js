@@ -1,11 +1,14 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const Post = require("./models/post");
+//const Post = require("./models/post");
 const path = require("path");
 const staticAsset = require("static-asset"); //add hash for static
 const config = require("./config");
 const mongoose = require("mongoose");
 const routes = require('./routes');
+/** for session **/
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 
 //database
 mongoose.Promise = global.Promise;
@@ -21,9 +24,20 @@ mongoose.connect(config.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
-mongoose.set('useCreateIndex', true)
+mongoose.set('useCreateIndex', true);
 //express
 const app = express();
+
+app.use(
+    session({
+        secret: config.SESSION_SECRET,
+        resave: true,
+        saveUninitialized: false,
+        store: new MongoStore({
+            mongooseConnection: mongoose.connection
+        })
+    })
+);
 
 //sets and uses
 app.set("view engine", "ejs");
@@ -40,7 +54,14 @@ app.use(
 
 //routes
 app.get("/", (req, res) => {
-    res.render("index");
+    const id = req.session.userId;
+    const login = req.session.userLogin;
+    res.render("index", {
+        user: {
+            id,
+            login
+        }
+    });
 });
 app.use('/api/auth', routes.auth);
 
