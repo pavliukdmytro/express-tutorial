@@ -8,6 +8,12 @@
 		margin-bottom: $freeSpace;
 		//padding: $freeSpace;
 		min-height: 100px;
+		.pagination{
+			display: flex;
+			align-items: center;
+			justify-content: space-evenly;
+			font-size: 1.15em;
+		}
 	}
 	.sidebar {
 		flex: 1;
