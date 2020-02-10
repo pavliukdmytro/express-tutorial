@@ -42,7 +42,7 @@ p.success,
 div.error,
 p.error {
 	background-color: lighten($successColor, 50%);
-	border: 1px solid $successColor;
+	border: 1px solid $successColor !important;
 	font-size: 0.8em;
 	padding: $freeSpace / 2;
 	color: $successColor;
@@ -53,7 +53,7 @@ p.error {
 div.error,
 p.error {
 	background-color: lighten($errorColor, 45%);
-	border-color: $errorColor;
+	border-color: $errorColor !important;
 	color: $errorColor;
 }
 

@@ -1,21 +1,22 @@
 /* eslint-disable no-undef */
 $(function() {
-    
+
     var editor = new MediumEditor('#post-body', {
         placeholder: {
             text: '',
             hideOnClick: true
         }
     });
-    
+
     $('.publish-button').on('click', function(e) {
         e.preventDefault();
-    
+        const $this = this;
+
         var data = {
             title: $('#post-title').val(),
             body: $('#post-body').html()
         };
-    
+
         $.ajax({
             type: 'POST',
             data: JSON.stringify(data),
@@ -23,18 +24,18 @@ $(function() {
             url: '/post/add'
         }).done(function(data) {
             console.log(data);
-            //$('p.error, p.success').remove();
+            $('.post-form p.error, .post-form p.success').remove();
             //console.log(data);
-            //if(!data.ok) {
-                //$('.register h2').after('<p class="error">' + data.error + '</p>');
-                //if(data.fields) {
-                //    data.fields.forEach(function(name) {
-                //        $($this).closest('form').find('input[name="' + name + '"]').addClass('error');
-                //    })
-                //}
-                //return;
-            //}
-            //location.href = '/';
+            if(!data.ok) {
+                $('.post-form h2').after('<p class="error">' + data.error + '</p>');
+                if(data.fields) {
+                   data.fields.forEach(function(name) {
+                       $($this).closest('form').find('#post-' + name).addClass('error');
+                   })
+                }
+                return;
+            }
+            location.href = '/';
         })
     });
 });

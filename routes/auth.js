@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt-nodejs');
 //register
 router.post('/register', (req, res) => {
     const {login, password, passwordConfirm} = req.body;
-    
+
     if(!login || !password || !passwordConfirm) {
         const fields = [];
         if(!login ) fields.push('login');
@@ -80,12 +80,12 @@ router.post('/register', (req, res) => {
 //auth
 router.post('/login', (req, res) => {
     const {login, password} = req.body;
-    
+
     if(!login || !password) {
         const fields = [];
         if(!login ) fields.push('login');
         if(!password ) fields.push('password');
-        
+
         res.json({
             ok: false,
             error: 'Все поля должны быть заполнены',
@@ -113,7 +113,7 @@ router.post('/login', (req, res) => {
                         } else {
                             req.session.userId = user.id;
                             req.session.userLogin = user.login;
-                            
+
                             res.json({
                                 ok: true
                             })
@@ -128,7 +128,7 @@ router.post('/login', (req, res) => {
                 })
         })
     }
-    console.log(req.body);
+    // console.log(req.body);
 });
 //logout
 router.get('/logout', (req, res) => {

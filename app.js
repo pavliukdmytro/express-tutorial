@@ -44,7 +44,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(bodyParser.urlencoded({ extended: true }));
 // parse application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 app.use(staticAsset(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
@@ -80,7 +80,7 @@ app.use((error, req, res, next) => {
     res.render('error', {
         message: error.message,
         error: !config.IS_PRODUCTION ? error : ''
-    })
+    });
 });
 
 app.listen(config.PORT, () =>
