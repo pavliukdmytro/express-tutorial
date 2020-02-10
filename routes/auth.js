@@ -59,6 +59,7 @@ router.post('/register', (req, res) => {
                             res.json({
                                 ok: true
                             })
+                            res.redirect('/');
                         }).catch(() => {
                             res.json({
                                 ok: false,
@@ -112,11 +113,11 @@ router.post('/login', (req, res) => {
                         } else {
                             req.session.userId = user.id;
                             req.session.userLogin = user.login;
+                            
                             res.json({
                                 ok: true
                             })
                         }
-                        console.log(result)
                     });
                 }
             }).catch((err) => {

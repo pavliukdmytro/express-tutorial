@@ -37,7 +37,7 @@ $(function() {
                 }
                 return;
             }
-            $('.register h2').after('<p class="success">Отлично</p>');
+            location.href = '/';
         })
     });
     $('.login-button').on('click', function(e) {
@@ -56,7 +56,6 @@ $(function() {
             url: '/api/auth/login'
         }).done(function(data) {
             $('p.error, p.success').remove();
-            //console.log(data);
             if(!data.ok) {
                 $('.login h2').after('<p class="error">' + data.error + '</p>');
                 if(data.fields) {
@@ -66,9 +65,7 @@ $(function() {
                 }
                 return;
             }
-            //$(location).attr('href')
             location.href = '/';
-            //$('.login h2').after('<p class="success">Отлично</p>');
         })
     });
     $('input, textarea').on('focus', function() {
