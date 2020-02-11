@@ -8,11 +8,13 @@ async function posts(req, res) {
     const {userId, userLogin} = req.session;
     const perPage = +config.PER_PAGE;
     const page = req.params.page || 1;
+    
     try {
         const posts = await Post.find({}).skip(perPage * page - perPage)
             .limit(perPage)
             .populate('owner')
             .sort({createdAt: -1});
+        //console.log(posts);
 
         const count = await Post.count();
 
