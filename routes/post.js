@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const {Post} = require('../models');
-var TurndownService = require('turndown');
-
-var turndownService = new TurndownService();
+const TurndownService = require('turndown');
+const turndownService = new TurndownService();
 
 //GET is add
 router.get('/add', (req, res) => {
@@ -26,14 +25,9 @@ router.post('/add', (req, res) => {
     const title = req.body.title.trim().replace(/  +(?=)/g, ' ');
     const {body} = req.body;
     const userId = req.session.userId;
-    // const userLogin = req.session.userLogin;
-    let fields = [];
-    // title = title
-
-    // console.log(title, body);
 
     if(!title || !body) {
-        const fields = [];
+        let fields = [];
         if(!title ) fields.push('title');
         if(!body ) fields.push('body');
 
@@ -59,8 +53,7 @@ router.post('/add', (req, res) => {
             title,
             body: turndownService.turndown(body),
             owner: userId
-        }).then(post => {
-            console.log(post);
+        }).then(() => {
             res.json({
                 ok: true
             });
