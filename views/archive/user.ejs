@@ -1,4 +1,4 @@
-<%- include ('./layout/header.ejs') %>
+<%- include ('../layout/header.ejs') %>
 <div class="main">
     <div class="container">
         <div class="content">
@@ -11,9 +11,7 @@
                         <%= posts[i].body %>
                     </div>
                     <div class="bottom">
-                        <div class="autor">
-                            Автор: <a href="/">Гедеван</a>
-                        </div>
+                        <div class="autor"></div>
                         <a href="/">
                             Коментарии
                         </a>
@@ -22,20 +20,20 @@
             <% } %>
             <div class="pagination">
                 <% if(pages > 0 && current > 2) { %>
-                    <a href="/archive/<%= Number(current) - 1 %>" class="old">← old page</a>
+                    <a href="/users/<%= _user.login %>/<%= Number(current) - 1 %>" class="old">← old page</a>
                 <% } %>
                 <% if(current == 2) { %>
-                    <a href="/" class="old">back on index</a>
+                    <a href="/users/<%= _user.login %>/" class="old">go to first</a>
 
-                        <% } %>
+                <% } %>
                 <% if(pages > 0 && current < pages) { %>
-                    <a href="/archive/<%= Number(current) + 1 %>" class="new">new page →</a>
+                    <a href="/users/<%= _user.login %>/<%= Number(current) + 1 %>" class="new">new page →</a>
                 <% } %>
             </div>
         </div>
-        <%- include('layout/sidebar.ejs') %>
+        <%- include('../layout/sidebar.ejs') %>
     </div>
 </div>
-<%- include ('layout/footer.ejs') %>
+<%- include ('../layout/footer.ejs') %>
 
 

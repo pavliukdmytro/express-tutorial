@@ -2,27 +2,32 @@ const express = require('express');
 const router = express.Router();
 
 const config = require('../config');
-const {Post} = require('../models');
+const {Post, User} = require('../models');
 
 function posts(req, res) {
     const {userId, userLogin} = req.session;
     const perPage = +config.PER_PAGE;
     const page = req.params.page || 1;
 
-    Post.find({}).skip(perPage * page - perPage).limit(perPage)
-    .then(posts => {
-        Post.count().then(count => {
-            res.render('index', {
-                user: {
-                    id: userId,
-                    login: userLogin,
-                },
-                posts,
-                current: page,
-                pages: Math.ceil(count / perPage)
-            })
+    Post.find({})
+        .skip(perPage * page - perPage)
+        .limit(perPage)
+        .populate('owner')
+        .sort({createdAt: -1})
+        .then(posts => {
+            // console.log(posts);
+            Post.count().then(count => {
+                res.render('archive/index', {
+                    user: {
+                        id: userId,
+                        login: userLogin,
+                    },
+                    posts,
+                    current: page,
+                    pages: Math.ceil(count / perPage)
+                })
+            }).catch(() => {throw new Error('Server Error')});
         }).catch(() => {throw new Error('Server Error')});
-    }).catch(() => {throw new Error('Server Error')});
 }
 
 router.get("/", posts);
@@ -54,6 +59,40 @@ router.get('/posts/:post', (req, res, next) => {
             }
         })
     }
+});
+//users posts
+router.get('/users/:login/:page*?', (req,res) => {
+    const {userId, userLogin} = req.session;
+    const perPage = +config.PER_PAGE;
+    const page = req.params.page || 1;
+    const login = req.params.login;
+
+    User.findOne({
+        login
+    }).then(user => {
+        Post.find({owner: user.id})
+            .skip(perPage * page - perPage)
+            .limit(perPage)
+            .sort({createdAt: -1})
+            .then(posts => {
+                Post.count({
+                        owner: user.id
+                    }).then(count => {
+                        res.render('archive/user', {
+                            user: {
+                                id: userId,
+                                login: userLogin,
+                            },
+                            posts,
+                            current: page,
+                            pages: Math.ceil(count / perPage),
+                            _user: user
+                        })
+                }).catch(() => {throw new Error('Server Error')});
+            }).catch(() => {throw new Error('Server Error')});
+    })
+
+
 });
 
 module.exports = router;
