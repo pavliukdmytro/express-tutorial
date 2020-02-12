@@ -122,31 +122,41 @@ $(function() {
 $(function() {
     var commentForm;
     var parentId;
-
-    //clone form
-    $('#new, #replay').on('click', function() {
+    
+    function form(isNew, comment) {
+        $('.replay').show();
         if(commentForm) {
             commentForm.remove();
         }
-
+    
         commentForm = $('form.comment').clone(true, true);
-
-        if($(this).attr('id') === 'new') {
+    
+        if(isNew) {
+            commentForm.find('.cancel').hide();
             commentForm.appendTo('.comment-list');
         } else {
-            var parentComment = $(this).parent();
+            var parentComment = $(comment).parent();
             parentId = parentComment.attr('id');
-            $(this).after(commentForm)
+            $(comment).after(commentForm)
             // console.log(parentComment)
         }
-
+    
         commentForm.css({'display': 'flex'})
+    }
+    //load
+    form(true);
+
+    //clone form
+    $('.replay').on('click', function() {
+        form(false, this);
+        $(this).hide();
     });
 
     //cancel form
     $('form.comment .cancel').on('click', function(e) {
         e.preventDefault();
         commentForm.remove();
+        form(true);
     });
 
     $('form.comment .send').on('click', function(e) {
@@ -167,17 +177,26 @@ $(function() {
         }).done(function(data) {
             //console.log(data);
             //$('.post-form p.error, .post-form p.success').remove();
-            //console.log(data);
-            //if(!data.ok) {
-            //    $('.post-form h2').after('<p class="error">' + data.error + '</p>');
-            //    if(data.fields) {
-            //        data.fields.forEach(function(name) {
-            //            $($this).closest('form').find('#post-' + name).addClass('error');
-            //        })
-            //    }
-            //    return;
-            //}
-            //location.href = '/';
+            console.log(data);
+            if(!data.ok) {
+                if(data.error === undefined) {
+                    data.error = 'Неизвестная ошибка!';
+                }
+                $(commentForm).prepend('<p class="error">' + data.error + '</p>')
+            } else {
+                var newComment =
+                        '<ul>'
+                    + '     <li style="background-color:#ffffe0">'
+                    + '         <div class="head">'
+                    + '             <a href="/users/'+  data.login +'">' +  data.login + '</a>'
+                    + '            <span class="date">только что</span>'
+                    + '         </div>'
+                    +  data.body
+                    +       '</li>'
+                    +  '</ul>'
+                $(commentForm).after(newComment);
+                form(true);
+            }
         })
     });
 

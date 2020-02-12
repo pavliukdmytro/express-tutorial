@@ -5,7 +5,14 @@ const {Comment} = require('../models');
 router.post('/add', async (req, res) => {
     const {body, id, post, parent} = req.body;
     const {userId, userLogin} = req.session;
-    console.log(req.body);
+    //console.log(req.body);
+    
+    if(!body) {
+        res.json({
+            ok: false,
+            error: 'Пустой комментарий'
+        })
+    }
 
     if(!userId || !userLogin) {
         res.json({
@@ -18,6 +25,11 @@ router.post('/add', async (req, res) => {
                     post,
                     body,
                     owner: userId
+                });
+                res.json({
+                    ok: true,
+                    body,
+                    login: userLogin
                 })
             } else {
                 const parentComment = await Comment.findById(parent);
@@ -38,6 +50,12 @@ router.post('/add', async (req, res) => {
                     children.push(comment.id);
                     parentComment.children = children;
                     await parentComment.save();
+    
+                    res.json({
+                        ok: true,
+                        body,
+                        login: userLogin
+                    })
                 }
             }
         } catch (err) {
@@ -46,7 +64,6 @@ router.post('/add', async (req, res) => {
             })
         }
     }
-    console.log(body);
 });
 
 

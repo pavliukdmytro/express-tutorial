@@ -14,8 +14,8 @@
                         <div class="autor">
                             Автор: <a href="/users/<%= posts[i].owner.login %>"><%= posts[i].owner.login %></a>
                         </div>
-                        <a href="/">
-                            Коментарии
+                        <a href="/<%= posts[i].url %>#posts[i].id">
+                            Коментарии: <%= posts[i].commentCount%>
                         </a>
                     </div>
                 </div>
