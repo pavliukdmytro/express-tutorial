@@ -1,14 +1,16 @@
 const express = require('express');
 const router = express.Router();
+const moment = require('moment');
+moment.locale('ru');
 
 const config = require('../config');
-const {Post, User} = require('../models');
+const {Post, User, Comment} = require('../models');
 
 async function posts(req, res) {
     const {userId, userLogin} = req.session;
     const perPage = +config.PER_PAGE;
     const page = req.params.page || 1;
-    
+
     try {
         const posts = await Post.find({}).skip(perPage * page - perPage)
             .limit(perPage)
@@ -50,12 +52,21 @@ router.get('/posts/:post', async (req, res, next) => {
                 err.status = 404;
                 next(err);
             } else {
+                const comments = await Comment.find({
+                    post: post.id,
+                    parent: {
+                        $exists: false
+                    }
+                });
+
                 res.render('post/post', {
                     user: {
                         id: userId,
                         login: userLogin,
                     },
-                    post
+                    moment,
+                    post,
+                    comments
                 })
             }
         } catch (err) {

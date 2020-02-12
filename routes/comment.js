@@ -6,7 +6,7 @@ router.post('/add', async (req, res) => {
     const {body, id, post, parent} = req.body;
     const {userId, userLogin} = req.session;
     console.log(req.body);
-    
+
     if(!userId || !userLogin) {
         res.json({
             ok: false
@@ -19,6 +19,26 @@ router.post('/add', async (req, res) => {
                     body,
                     owner: userId
                 })
+            } else {
+                const parentComment = await Comment.findById(parent);
+
+                if(!parentComment) {
+                    res.json({
+                        ok: false
+                    })
+                } else {
+                    const comment = await Comment.create({
+                        post,
+                        body,
+                        parent,
+                        owner: userId
+                    })
+
+                    const children = parentComment.children;
+                    children.push(comment.id);
+                    parentComment.children = children;
+                    await parentComment.save();
+                }
             }
         } catch (err) {
             res.json({
