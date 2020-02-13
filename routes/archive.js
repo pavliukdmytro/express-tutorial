@@ -12,11 +12,13 @@ async function posts(req, res) {
     const page = req.params.page || 1;
 
     try {
-        const posts = await Post.find({}).skip(perPage * page - perPage)
+        const posts = await Post.find({
+            status: 'published'
+        })
+            .skip(perPage * page - perPage)
             .limit(perPage)
             .populate('owner')
             .sort({createdAt: -1});
-        //console.log(posts);
 
         const count = await Post.count();
 

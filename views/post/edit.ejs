@@ -3,17 +3,26 @@
     <div class="container">
         <div class="content add-post">
             <form method="post" class="post-form">
-                <h2>Добавление Поста!</h2>
+                <% if(typeof post !== 'undefined') { %>
+                    <h2>Редактирование поста Поста!</h2>
+                <% } else { %>
+                    <h2>Добавление Поста!</h2>
+                <% } %>
                 <div class="form-group">
                     <label for="post-title">Заголовок</label>
-                    <input type="text" id="post-title" name="post-title">
+                    <input type="text" id="post-title" name="post-title"
+                           value="<%= typeof post !== 'undefined' ? post.title: ''%>">
                 </div>
                 <div class="form-group">
                     <span>Текст</span>
-                    <textarea id="post-body"></textarea>
+                    <textarea id="post-body">
+                        <%= typeof post !== 'undefined' ? post.body: ''%>
+                    </textarea>
                 </div>
+                <input type="hidden" id="post-id" name="postId"
+                       value="<%= typeof post !== 'undefined' ? post.id: ''%>">
                 <div class="buttons">
-<!--                    <button class="save-button secondary-inverse">Сохранить как черновик</button>-->
+                    <button class="save-button secondary-inverse">Сохранить как черновик</button>
                     <button class="publish-button">Опубликовать</button>
                 </div>
             </form>

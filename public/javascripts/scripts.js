@@ -77,13 +77,17 @@ $(function() {
 
 /* eslint-disable no-undef */
 $(function() {
-    $('.publish-button').on('click', function(e) {
+    $('.publish-button, .save-button').on('click', function(e) {
         e.preventDefault();
         const $this = this;
 
+        let isDraft = $(this).hasClass('save-button');
+
         var data = {
             title: $('#post-title').val(),
-            body: $('#post-body').val()
+            body: $('#post-body').val(),
+            isDraft,
+            postId: $('#post-id').val()
         };
 
         $.ajax({
@@ -103,7 +107,11 @@ $(function() {
                    })
                 }
             } else {
-                location.href = '/';
+                if(isDraft) {
+                    location.href = '/post/edit/' + data.post.id;
+                } else {
+                    location.href = '/posts/' + data.post.url;
+                }
             }
         })
     });

@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {Post} = require('../models');
-const TurndownService = require('turndown');
-const turndownService = new TurndownService();
+
 
 //GET is add
 router.get('/add', (req, res) => {
@@ -12,7 +11,7 @@ router.get('/add', (req, res) => {
     if(!userId || !userLogin) {
         res.redirect('/')
     } else {
-        res.render("post/add", {
+        res.render("post/edit", {
             user: {
                 id: userId,
                 login: userLogin
@@ -21,10 +20,45 @@ router.get('/add', (req, res) => {
     }
 });
 
-router.post('/add', (req, res) => {
-    const title = req.body.title.trim().replace(/  +(?=)/g, ' ');
-    const {body} = req.body;
+
+router.get('/edit/:id',async (req, res, next) => {
     const userId = req.session.userId;
+    const userLogin = req.session.userLogin;
+    const id = req.params.id.trim().replace(/  +(?=)/g, ' ');
+
+    if(!userId || !userLogin) {
+        res.redirect('/')
+    } else {
+
+        try{
+            const post = await Post.findById(id);
+
+            if(!post) {
+                const err = new Error('Not found');
+                err.status = 404;
+                next(err);
+            }
+
+            res.render("post/edit", {
+                post,
+                user: {
+                    id: userId,
+                    login: userLogin
+                }
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    }
+});
+
+
+router.post('/add', async (req, res) => {
+    const userId = req.session.userId;
+    const title = req.body.title.trim().replace(/  +(?=)/g, ' ');
+    const body = req.body.body.trim();
+    const isDraft = !!req.body.isDraft;
+    const postId = req.body.postId;
 
     if(!title || !body) {
         let fields = [];
@@ -49,20 +83,41 @@ router.post('/add', (req, res) => {
             fields: ['body']
         })
     } else {
-        Post.create({
-            title,
-            body: turndownService.turndown(body),
-            owner: userId
-        }).then(() => {
-            res.json({
-                ok: true
-            });
-        }).catch((err) => {
-            console.error(err);
+        try{
+            if(postId) {
+                const post = await Post.findOneAndUpdate(
+                    {_id: postId, owner: userId},
+                    { title, body, status: isDraft ? 'draft' : 'published' },
+                    {new: true}
+                );
+                if(!post) {
+                    res.json({
+                        ok: false,
+                        error: 'Пост не твой!'
+                    })
+                } else {
+                    res.json({
+                        ok: true,
+                        post
+                    })
+                }
+            } else {
+                const post = await Post.create({
+                    title,
+                    body,
+                    owner: userId
+                });
+
+                res.json({
+                    ok: true,
+                    post
+                });
+            }
+        } catch (err) {
             res.json({
                 ok: false
             });
-        });
+        }
     }
 });
 
