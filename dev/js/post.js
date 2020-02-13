@@ -1,20 +1,12 @@
 /* eslint-disable no-undef */
 $(function() {
-
-    var editor = new MediumEditor('#post-body', {
-        placeholder: {
-            text: '',
-            hideOnClick: true
-        }
-    });
-
     $('.publish-button').on('click', function(e) {
         e.preventDefault();
         const $this = this;
 
         var data = {
             title: $('#post-title').val(),
-            body: $('#post-body').html()
+            body: $('#post-body').val()
         };
 
         $.ajax({
@@ -33,9 +25,31 @@ $(function() {
                        $($this).closest('form').find('#post-' + name).addClass('error');
                    })
                 }
-                return;
+            } else {
+                location.href = '/';
             }
-            location.href = '/';
+        })
+    });
+
+    //upload
+    $('#fileinfo').on('submit', function(e) {
+        e.preventDefault();
+
+        var formDate = new FormData(this);
+
+        $.ajax({
+            type: 'POST',
+            url: '/upload/image',
+            data: formDate,
+            processData: false,
+            contentType: false,
+            // contentType: 'multipart/form-data',
+            success: function (result) {
+                console.log(result);
+            },
+            error: function (err) {
+                console.error(err);
+            }
         })
     });
 });
