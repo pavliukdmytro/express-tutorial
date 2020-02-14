@@ -1,15 +1,16 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const tr = require('transliter');
+// const tr = require('transliter');
 
 const schema = new Schema({
     title: {
-        type: String,
-        required: true,
-        // unique: true
+        type: String
     },
     body: {
-        type: String,
+        type: String
+    },
+    url: {
+        type: String
     },
     owner: {
         type: Schema.Types.ObjectId,
@@ -20,9 +21,6 @@ const schema = new Schema({
         enum: ['published', 'draft'],
         require: true,
         default: 'published'
-    },
-    url: {
-        type: String
     },
     commentCount: {
         type: Number,
@@ -43,9 +41,9 @@ schema.set("toJSON", {
   virtuals: true
 });
 
-schema.pre('save', function(next) {
-    this.url = `${tr.slugify(this.title)}-${Date.now().toString(36)}`;
-    next();
-});
+// schema.pre('save', function(next) {
+//     this.url = `${tr.slugify(this.title)}-${Date.now().toString(36)}`;
+//     next();
+// });
 
 module.exports = mongoose.model("Post", schema);
