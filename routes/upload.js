@@ -3,13 +3,33 @@ const router = express.Router();
 const path = require('path');
 const Sharp = require('sharp');
 const multer = require('multer');
+const config = require('../config');
+const mkdirp = require('mkdirp'); //для создания директорий если их нет
+const diskStorage = require('../utils/diskStorage');
 
-const storage = multer.diskStorage({
-    destination: (req, file, callback) => {
-        callback(null, 'uploads');
+const rs = () => Math.random().toString(36).slice(-3);
+
+const storage = diskStorage({
+    destination: (req, file, cb) => {
+        const dir = '/' + rs() + '/' + rs();
+        req.dir = dir;
+        mkdirp(config.DESTINATION + dir, err => cb(err, config.DESTINATION + dir));
     },
     filename: (req, file, callback) => {
+        //
         callback(null, Date.now() + path.extname(file.originalname))
+    },
+    sharp: (req,file, cb) => {
+        const resizer = Sharp()
+            .resize(1024, 768)
+            // .max()
+            // .withoutEnlargement()
+            .toFormat('jpg')
+            .jpeg({
+                quality: 40,
+                progressive: true
+            })
+        cb(null, resizer)
     }
 });
 
