@@ -6,6 +6,7 @@ const multer = require('multer');
 const config = require('../config');
 const mkdirp = require('mkdirp'); //для создания директорий если их нет
 const diskStorage = require('../utils/diskStorage');
+const {Post, Upload} = require('../models/index');
 
 const rs = () => Math.random().toString(36).slice(-3);
 
@@ -15,9 +16,34 @@ const storage = diskStorage({
         req.dir = dir;
         mkdirp(config.DESTINATION + dir, err => cb(err, config.DESTINATION + dir));
     },
-    filename: (req, file, callback) => {
+    filename: async (req, file, callback) => {
+        const userId = req.session.userId;
+        const fileName = Date.now().toString(36) + path.extname(file.originalname);
+        const dir = req.dir;
+        //find post
+        const post = await Post.findById(req.body.postId);
+        if(!post) {
+            const err = new Error('No post');
+            err.code = "NOPOST";
+            return callback(err);
+        }
+        //upload
+        const upload = await Upload.create({
+            owner: userId,
+            path: dir + "/" + fileName
+        });
+        
+        //write to post
+        const uploads = post.uploads;
+        uploads.unshift(upload.id);
+        post.uploads = uploads;
+        
+        await post.save();
+        
         //
-        callback(null, Date.now() + path.extname(file.originalname))
+        req.filePath = dir + "/" + fileName;
+        
+        callback(null, fileName)
     },
     sharp: (req,file, cb) => {
         const resizer = Sharp()
@@ -50,6 +76,7 @@ const upload = multer({
 
 router.post('/image', (req, res) => {
     // console.log(req.file, req.body);
+    console.log(req);
     upload(req, res, err => {
         let error = '';
         if(err) {
@@ -57,12 +84,15 @@ router.post('/image', (req, res) => {
                 error = 'Картинка не болие 1mb'
             } else if(err.code === 'EXTENTION') {
                 error = 'Только jpeg и png';
+            } else if(err.code === 'NOPOST') {
+                error = 'Обнови страницу';
             }
         }
         // console.log(error);
         res.json({
             ok: !error,
             error,
+            filePath: req.filePath
         });
     });
 });

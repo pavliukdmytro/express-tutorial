@@ -7,7 +7,7 @@
                     <div class="top">
                         <h2>
                             <a href="/posts/<%= posts[i].url %>"><%= posts[i].title %></a>
-                            <% if(posts[i].owner.login === user.login) { %>
+                            <% if(posts[i].owner && posts[i].owner.login === user.login) { %>
                                 <a href="/post/edit/<%= posts[i].id %>" style="color: black; text-decoration: unset">&#9998;</a>
                             <% } %>
                         </h2>
@@ -17,7 +17,10 @@
                     </div>
                     <div class="bottom">
                         <div class="autor">
-                            Автор: <a href="/users/<%= posts[i].owner.login %>"><%= posts[i].owner.login %></a>
+                            Автор:
+                            <a href="/users/<%= posts[i].owner && posts[i].owner.login ? posts[i].owner.login: '' %>">
+                                <%= posts[i].owner && posts[i].owner.login ? posts[i].owner.login: '' %>
+                            </a>
                         </div>
                         <a href="/<%= posts[i].url %>#posts[i].id">
                             Коментарии: <%= posts[i].commentCount%>

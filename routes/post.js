@@ -41,7 +41,7 @@ router.get('/edit/:id', async (req, res, next) => {
     } else {
 
         try{
-            const post = await Post.findById(id);
+            const post = await Post.findById(id).populate('uploads');
 
             if(!post) {
                 const err = new Error('Not found');

@@ -18,7 +18,7 @@ mongoose.connection
     .once("open", () => {
     const info = mongoose.connections[0];
     console.log(`Connected to ${info.host}:${info.port}/${info.name}`);
-     // require('./mocks')();
+      //require('./mocks')();
     });
 
 mongoose.connect(config.MONGO_URL, {
@@ -45,6 +45,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(staticAsset(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "public")));
+app.use('/uploads', express.static(path.join(__dirname, config.DESTINATION)));
 app.use("/javascripts", express.static(path.join(__dirname, "node_modules", "jquery", "dist")));
 
 //routes

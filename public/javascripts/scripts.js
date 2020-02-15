@@ -117,20 +117,21 @@ $(function() {
     });
 
     //upload
-    $('#fileinfo').on('submit', function(e) {
-        e.preventDefault();
-
-        var formDate = new FormData(this);
-
+    $('#file').on('change', function() {
+        var formDate = new FormData();
+        formDate.append('postId', $('#post-id').val());
+        formDate.append('file', $('#file')[0].files[0]);
+       
         $.ajax({
             type: 'POST',
             url: '/upload/image',
             data: formDate,
             processData: false,
             contentType: false,
-            // contentType: 'multipart/form-data',
-            success: function (result) {
-                console.log(result);
+            success: function (data) {
+                console.log(data);
+                $('#fileinfo').prepend('<div class="img-container"> <img src="/uploads' + data.filePath  + '" alt=""></div>')
+                //console.log('<div class="img-container"> <img src="/uploads' + data.data  + '" alt=""></div>');
             },
             error: function (err) {
                 console.error(err);

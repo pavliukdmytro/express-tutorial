@@ -2,7 +2,7 @@ const faker = require('faker');
 const models = require('./models');
 const tr = require('transliter');
 
-const owner = '5e4555b13d37f52278afa1d2';
+const owner = '5e47d1d8135dfee675bf703c';
 
 module.exports = async () => {
     try{
